@@ -2,14 +2,17 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package win
 
 import (
-	"golang.org/x/sys/windows"
+	"fmt"
 	"syscall"
 	"unsafe"
+
+	"golang.org/x/sys/windows"
 )
 
 const MAX_PATH = 260
@@ -84,6 +87,7 @@ var (
 	mulDiv                             *windows.LazyProc
 	loadResource                       *windows.LazyProc
 	lockResource                       *windows.LazyProc
+	openProcess                        *windows.LazyProc
 	setLastError                       *windows.LazyProc
 	sizeofResource                     *windows.LazyProc
 	systemTimeToFileTime               *windows.LazyProc
@@ -170,6 +174,7 @@ func init() {
 	mulDiv = libkernel32.NewProc("MulDiv")
 	loadResource = libkernel32.NewProc("LoadResource")
 	lockResource = libkernel32.NewProc("LockResource")
+	openProcess = libkernel32.NewProc("OpenProcess")
 	setLastError = libkernel32.NewProc("SetLastError")
 	sizeofResource = libkernel32.NewProc("SizeofResource")
 	systemTimeToFileTime = libkernel32.NewProc("SystemTimeToFileTime")
@@ -448,4 +453,21 @@ func SystemTimeToFileTime(lpSystemTime *SYSTEMTIME, lpFileTime *FILETIME) bool {
 		0)
 
 	return ret != 0
+}
+
+func OpenProcess(desiredAccess uint32, inheritHandle bool, processId uint32) (hWnd HWND, err error) {
+	inherit := 0
+	if inheritHandle {
+		inherit = 1
+	}
+
+	ret, _, err := syscall.Syscall(openProcess.Addr(), 3,
+		uintptr(desiredAccess),
+		uintptr(inherit),
+		uintptr(processId),
+	)
+
+	fmt.Println(ret, err)
+	hWnd = HWND(ret)
+	return
 }
