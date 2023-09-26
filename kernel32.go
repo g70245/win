@@ -8,7 +8,6 @@
 package win
 
 import (
-	"fmt"
 	"syscall"
 	"unsafe"
 
@@ -469,7 +468,6 @@ func OpenProcess(desiredAccess uint32, inheritHandle bool, processId uint32) (hW
 		uintptr(processId),
 	)
 
-	fmt.Println(ret, err)
 	hWnd = HWND(ret)
 	return
 }
