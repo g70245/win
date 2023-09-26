@@ -88,6 +88,7 @@ var (
 	loadResource                       *windows.LazyProc
 	lockResource                       *windows.LazyProc
 	openProcess                        *windows.LazyProc
+	readProcessMemory                  *windows.LazyProc
 	setLastError                       *windows.LazyProc
 	sizeofResource                     *windows.LazyProc
 	systemTimeToFileTime               *windows.LazyProc
@@ -175,6 +176,7 @@ func init() {
 	loadResource = libkernel32.NewProc("LoadResource")
 	lockResource = libkernel32.NewProc("LockResource")
 	openProcess = libkernel32.NewProc("OpenProcess")
+	readProcessMemory = libkernel32.NewProc("ReadProcessMemory")
 	setLastError = libkernel32.NewProc("SetLastError")
 	sizeofResource = libkernel32.NewProc("SizeofResource")
 	systemTimeToFileTime = libkernel32.NewProc("SystemTimeToFileTime")
@@ -469,5 +471,20 @@ func OpenProcess(desiredAccess uint32, inheritHandle bool, processId uint32) (hW
 
 	fmt.Println(ret, err)
 	hWnd = HWND(ret)
+	return
+}
+
+func ReadProcessMemory(hWnd HWND, lpBaseAddress uint32, size uint) (data []byte) {
+	var numBytesRead uintptr
+	data = make([]byte, size)
+
+	syscall.Syscall6(readProcessMemory.Addr(), 5,
+		uintptr(hWnd),
+		uintptr(lpBaseAddress),
+		uintptr(unsafe.Pointer(&data[0])),
+		uintptr(size),
+		uintptr(unsafe.Pointer(&numBytesRead)),
+		0,
+	)
 	return
 }
