@@ -13,3 +13,9 @@ Make sure you have a working Go installation.
 See [Getting Started](http://golang.org/doc/install.html)
 
 Now run `go get github.com/g70245/win`
+
+New
+=====
+- OpenProcess
+- ReadProcessMemory
+- MapVirtualKeyEx
