@@ -1,21 +1,19 @@
-About win
-=========
+# win
 
-win is a Windows API wrapper package for Go.
+A Windows API wrapper package for Go.
 
-Originally part of [walk](https://github.com/lxn/walk), it is now a separate
-project.
+Originally part of [walk](https://github.com/lxn/walk), it is now a separate project. This repository is forked from the original win project with additional API bindings.
 
-Setup
-=====
+## Setup
 
 Make sure you have a working Go installation.
 See [Getting Started](http://golang.org/doc/install.html)
 
 Now run `go get github.com/g70245/win`
 
-New
-=====
-- OpenProcess
-- ReadProcessMemory
-- MapVirtualKeyEx
+## Added Features
+
+This fork adds the following Windows API bindings:
+- `OpenProcess`: Opens an existing local process object
+- `ReadProcessMemory`: Reads data from a process's memory space
+- `MapVirtualKeyEx`: Translates a virtual-key code into a scan code or character value
